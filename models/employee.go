@@ -8,14 +8,21 @@ import (
 
 type Employee struct {
 	gorm.Model
-	CodEmpleado string     `json:"cod_empleado"`
-	Name        *string    `json:"name"`
-	Email       string     `json:"email"`
-	Birth       *time.Time `json:"time"`
-	IngressDate *time.Time `json:"ingress_date"`
-	Phone       string     `json:"phone"`
-	Gender      string     `json:"gender"`
-	// Position
-	// State
-	// Project
+	CodEmpleado       string     `gorm:"not null;serializer:json"`
+	Name              *string    `gorm:"not null;serializer:json"`
+	Email             string     `gorm:"serializer:json"`
+	Birth             *time.Time `gorm:"serializer:json"`
+	IngressDate       *time.Time `gorm:"serializer:json"`
+	EndEvaluationDate *time.Time `gorm:"serializer:json"`
+	Phone             string     `gorm:"serializer:json"`
+	GenderID          int
+	Gender            Gender
+	PositionID        int
+	Position          Position
+	StateID           int
+	State             State
+	ProjectID         int
+	Project           Project
+	TeamID            int
+	Team              Team
 }

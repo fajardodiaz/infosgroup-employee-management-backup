@@ -22,7 +22,8 @@ func ConnectToDatabase() {
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, pass, host, port, database)
 
-	Db, err := gorm.Open(mysql.New(mysql.Config{
+	var err error
+	Db, err = gorm.Open(mysql.New(mysql.Config{
 		DriverName: "mysql",
 		DSN:        dsn,
 	}), &gorm.Config{})
@@ -33,5 +34,9 @@ func ConnectToDatabase() {
 
 	// Migrate the models
 	Db.AutoMigrate(&models.Employee{})
-
+	Db.AutoMigrate(&models.Gender{})
+	Db.AutoMigrate(&models.Position{})
+	Db.AutoMigrate(&models.Project{})
+	Db.AutoMigrate(&models.State{})
+	Db.AutoMigrate(&models.Team{})
 }
