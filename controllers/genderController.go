@@ -57,5 +57,20 @@ func PutGenderHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteGenderHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("DELETE"))
+	vars := mux.Vars(r)
+	var gender models.Gender
+	err := initializer.Db.Where("id = ?", vars["id"]).Take(&gender).Delete(&models.Gender{})
+	if err.Error != nil {
+		resp := make(map[string]string)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = err.Error.Error()
+		json.NewEncoder(w).Encode(resp)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(gender)
+
 }
