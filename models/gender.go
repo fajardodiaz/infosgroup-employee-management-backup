@@ -1,9 +1,20 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"errors"
+
+	"gorm.io/gorm"
+)
 
 type Gender struct {
 	gorm.Model
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	Name string `gorm:"serializer:json;not null;type:varchar(15)"`
+}
+
+func (g *Gender) Validate() error {
+	if g.Name == "" {
+		return errors.New("name is required")
+	}
+
+	return nil
 }
