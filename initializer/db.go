@@ -20,7 +20,7 @@ func ConnectToDatabase() {
 	port := os.Getenv("PORT")
 	database := os.Getenv("DATABASE")
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, pass, host, port, database)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", user, pass, host, port, database)
 
 	var err error
 	Db, err = gorm.Open(mysql.New(mysql.Config{
