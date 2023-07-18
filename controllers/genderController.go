@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/fajardodiaz/infosgroup-employee-management/initializer"
@@ -12,25 +11,29 @@ import (
 
 func GetGendersHandler(w http.ResponseWriter, r *http.Request) {
 	var genders []models.Gender
-
 	initializer.Db.Find(&genders)
-
-	response, err := json.Marshal(&genders)
-	if err != nil {
-		log.Fatal(err)
-	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
-	w.Write([]byte(response))
+	json.NewEncoder(w).Encode(&genders)
 }
 
 func GetGenderHandler(w http.ResponseWriter, r *http.Request) {
-	var user models.Gender
+	var gender models.Gender
 	vars := mux.Vars(r)
-	initializer.Db.Find(&user, vars["id"])
+
+	initializer.Db.Find(&gender, vars["id"])
+	if gender.ID == 0 {
+		resp := make(map[string]string)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = "Error, gender not found"
+		json.NewEncoder(w).Encode(resp)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
-	json.NewEncoder(w).Encode(&user)
+	json.NewEncoder(w).Encode(&gender)
 }
 
 func PostGenderHandler(w http.ResponseWriter, r *http.Request) {
@@ -49,11 +52,42 @@ func PostGenderHandler(w http.ResponseWriter, r *http.Request) {
 
 	initializer.Db.Create(&gender)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(&gender)
 }
 
 func PutGenderHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("PUT"))
+	var gender models.Gender
+	var newGender models.Gender
+	vars := mux.Vars(r)
+	initializer.Db.Find(&gender, vars["id"])
+
+	if gender.ID == 0 {
+		resp := make(map[string]string)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = "Error, gender not found"
+		json.NewEncoder(w).Encode(resp)
+		return
+	}
+
+	json.NewDecoder(r.Body).Decode(&newGender)
+	err := newGender.Validate()
+
+	if err != nil {
+		resp := make(map[string]string)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = err.Error()
+		json.NewEncoder(w).Encode(resp)
+		return
+	}
+
+	gender.Name = newGender.Name
+	initializer.Db.Save(&gender)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusAccepted)
+	json.NewEncoder(w).Encode(&gender)
 }
 
 func DeleteGenderHandler(w http.ResponseWriter, r *http.Request) {
