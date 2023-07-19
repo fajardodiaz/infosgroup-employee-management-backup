@@ -2,11 +2,13 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/fajardodiaz/infosgroup-employee-management/initializer"
 	"github.com/fajardodiaz/infosgroup-employee-management/models"
 	"github.com/gorilla/mux"
+	"gorm.io/gorm"
 )
 
 func GetGendersHandler(w http.ResponseWriter, r *http.Request) {
@@ -22,12 +24,12 @@ func GetGenderHandler(w http.ResponseWriter, r *http.Request) {
 	// Controller to get a single gender
 	vars := mux.Vars(r)
 	var gender models.Gender
-	initializer.Db.Find(&gender, vars["id"])
-	// Validate if the gender ID == 0
-	if gender.ID == 0 {
-		resp := make(map[string]string)
+
+	result := initializer.Db.Where(&gender.ID, vars["id"]).First(&gender)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
+		resp := make(map[string]string)
+		w.WriteHeader(http.StatusNotFound)
 		resp["message"] = "Error, gender not found"
 		json.NewEncoder(w).Encode(resp)
 		return
@@ -35,7 +37,7 @@ func GetGenderHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Return the gender
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(&gender)
 }
 
@@ -68,11 +70,11 @@ func PutGenderHandler(w http.ResponseWriter, r *http.Request) {
 	var newGender models.Gender
 
 	vars := mux.Vars(r)
-	initializer.Db.Find(&gender, vars["id"])
 
-	if gender.ID == 0 {
-		resp := make(map[string]string)
+	result := initializer.Db.Where(&gender.ID, vars["id"]).First(&gender)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		w.Header().Set("Content-Type", "application/json")
+		resp := make(map[string]string)
 		w.WriteHeader(http.StatusBadRequest)
 		resp["message"] = "Error, gender not found"
 		json.NewEncoder(w).Encode(resp)
