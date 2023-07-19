@@ -37,6 +37,11 @@ func GetRoutes() *mux.Router {
 
 	// State Routes
 	states := v1.PathPrefix("/states").Subrouter()
+	states.HandleFunc("", controllers.GetTeamsHandler).Methods("GET")
+	states.HandleFunc("/{id:[0-9]+}", controllers.GetTeamHandler).Methods("GET")
+	states.HandleFunc("", controllers.PostTeamHandler).Methods("POST")
+	states.HandleFunc("/{id:[0-9]+}", controllers.PutTeamHandler).Methods("PUT")
+	states.HandleFunc("/{id:[0-9]+}", controllers.DeleteTeamHandler).Methods("DELETE")
 
 	// Team Position
 	teams := v1.PathPrefix("/teams").Subrouter()
@@ -47,7 +52,7 @@ func GetRoutes() *mux.Router {
 	teams.HandleFunc("/{id:[0-9]+}", controllers.DeleteTeamHandler).Methods("DELETE")
 
 	// Employee Position
-	emplooyes := v1.PathPrefix("/employees").Subrouter()
+	// emplooyes := v1.PathPrefix("/employees").Subrouter()
 
 	return R
 }
