@@ -16,7 +16,7 @@ func GetPositionsHandler(w http.ResponseWriter, r *http.Request) {
 	var position []models.Position
 	initializer.Db.Find(&position)
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(&position)
 }
 
@@ -24,12 +24,12 @@ func GetPositionHandler(w http.ResponseWriter, r *http.Request) {
 	// Controller to get a single position
 	vars := mux.Vars(r)
 	var position models.Position
-	initializer.Db.First(&position, vars["id"])
-	// Validate if the position ID == 0
-	if position.ID == 0 {
-		resp := make(map[string]string)
+
+	result := initializer.Db.Where(&position.ID, vars["id"]).First(&position)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
+		resp := make(map[string]string)
+		w.WriteHeader(http.StatusNotFound)
 		resp["message"] = "Error, position not found"
 		json.NewEncoder(w).Encode(resp)
 		return
@@ -37,7 +37,7 @@ func GetPositionHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Return the position
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(&position)
 }
 
