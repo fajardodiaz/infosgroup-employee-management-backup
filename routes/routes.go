@@ -11,21 +11,43 @@ func GetRoutes() *mux.Router {
 	v1 := R.PathPrefix("/api/v1").Subrouter()
 
 	// Gender routes
-	gender := v1.PathPrefix("/genders").Subrouter()
+	genders := v1.PathPrefix("/genders").Subrouter()
 
-	gender.HandleFunc("", controllers.GetGendersHandler).Methods("GET")
-	gender.HandleFunc("/{id:[0-9]+}", controllers.GetGenderHandler).Methods("GET")
-	gender.HandleFunc("", controllers.PostGenderHandler).Methods("POST")
-	gender.HandleFunc("/{id}", controllers.PutGenderHandler).Methods("PUT")
-	gender.HandleFunc("/{id}", controllers.DeleteGenderHandler).Methods("DELETE")
+	genders.HandleFunc("", controllers.GetGendersHandler).Methods("GET")
+	genders.HandleFunc("/{id:[0-9]+}", controllers.GetGenderHandler).Methods("GET")
+	genders.HandleFunc("", controllers.PostGenderHandler).Methods("POST")
+	genders.HandleFunc("/{id}", controllers.PutGenderHandler).Methods("PUT")
+	genders.HandleFunc("/{id}", controllers.DeleteGenderHandler).Methods("DELETE")
 
 	// Position routes
-	position := v1.PathPrefix("/positions").Subrouter()
-	position.HandleFunc("", controllers.GetPositionsHandler).Methods("GET")
-	position.HandleFunc("/{id:[0-9]+}", controllers.GetPositionHandler).Methods("GET")
-	position.HandleFunc("", controllers.PostPositionHandler).Methods("POST")
-	position.HandleFunc("/{id:[0-9]+}", controllers.PutPositionHandler).Methods("PUT")
-	position.HandleFunc("/{id:[0-9]+}", controllers.DeletePositionHandler).Methods("DELETE")
+	positions := v1.PathPrefix("/positions").Subrouter()
+	positions.HandleFunc("", controllers.GetPositionsHandler).Methods("GET")
+	positions.HandleFunc("/{id:[0-9]+}", controllers.GetPositionHandler).Methods("GET")
+	positions.HandleFunc("", controllers.PostPositionHandler).Methods("POST")
+	positions.HandleFunc("/{id:[0-9]+}", controllers.PutPositionHandler).Methods("PUT")
+	positions.HandleFunc("/{id:[0-9]+}", controllers.DeletePositionHandler).Methods("DELETE")
+
+	// Project Routes
+	projects := v1.PathPrefix("/projects").Subrouter()
+	projects.HandleFunc("", controllers.GetProjectsHandler).Methods("GET")
+	projects.HandleFunc("/{id:[0-9]+}", controllers.GetProjectHandler).Methods("GET")
+	projects.HandleFunc("", controllers.PostProjectHandler).Methods("POST")
+	projects.HandleFunc("/{id:[0-9]+}", controllers.PutProjectHandler).Methods("PUT")
+	projects.HandleFunc("/{id:[0-9]+}", controllers.DeleteProjectHandler).Methods("DELETE")
+
+	// State Routes
+	states := v1.PathPrefix("/states").Subrouter()
+
+	// Team Position
+	teams := v1.PathPrefix("/teams").Subrouter()
+	teams.HandleFunc("", controllers.GetTeamsHandler).Methods("GET")
+	teams.HandleFunc("/{id:[0-9]+}", controllers.GetTeamHandler).Methods("GET")
+	teams.HandleFunc("", controllers.PostTeamHandler).Methods("POST")
+	teams.HandleFunc("/{id:[0-9]+}", controllers.PutTeamHandler).Methods("PUT")
+	teams.HandleFunc("/{id:[0-9]+}", controllers.DeleteTeamHandler).Methods("DELETE")
+
+	// Employee Position
+	emplooyes := v1.PathPrefix("/employees").Subrouter()
 
 	return R
 }
