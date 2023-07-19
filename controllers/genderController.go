@@ -14,7 +14,7 @@ func GetGendersHandler(w http.ResponseWriter, r *http.Request) {
 	var genders []models.Gender
 	initializer.Db.Find(&genders)
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(&genders)
 }
 
