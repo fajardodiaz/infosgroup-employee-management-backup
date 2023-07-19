@@ -1,9 +1,20 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"errors"
+
+	"gorm.io/gorm"
+)
 
 type Position struct {
 	gorm.Model
-	ID   int    `gorm:"serializer:json"`
 	Name string `gorm:"not null;serializer:json"`
+}
+
+func (p *Position) Validate() error {
+	if p.Name == "" {
+		return errors.New("name is required")
+	}
+
+	return nil
 }
