@@ -118,6 +118,6 @@ func DeletePositionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// return the deleted item
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNoContent)
 	json.NewEncoder(w).Encode(position)
 }

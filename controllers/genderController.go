@@ -99,7 +99,7 @@ func PutGenderHandler(w http.ResponseWriter, r *http.Request) {
 	gender.Name = newGender.Name
 	initializer.Db.Save(&gender)
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusAccepted)
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(&gender)
 }
 
@@ -118,6 +118,6 @@ func DeleteGenderHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// return the deleted item
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNoContent)
 	json.NewEncoder(w).Encode(gender)
 }
